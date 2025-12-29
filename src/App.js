@@ -20,7 +20,11 @@ function AppContent() {
   const [filteredProducts, setFilteredProducts] = useState(products);
 
   const [appliedDiscount, setAppliedDiscount] = useState(0);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Load user from localStorage on initial render
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   useEffect(() => {
     const filtered = products.filter((product) => {
@@ -33,6 +37,15 @@ function AppContent() {
     });
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory]);
+
+  // Save user to localStorage whenever user state changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
 
 
